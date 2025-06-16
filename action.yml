@@ -1,5 +1,8 @@
 name: 'Gitleaks Action Test PoC'
 description: 'Run Gitleaks to detect secrets in the repository'
+branding:
+  icon: 'shield'
+  color: 'blue'
 inputs:
   report_format:
     description: 'Format of the report to generate'

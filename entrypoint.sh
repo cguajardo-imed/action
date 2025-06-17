@@ -10,11 +10,10 @@ REPORT_PATH="/app/gitleaks-report.$FORMAT"
 
 echo "::group::Running Gitleaks scan"
 # Run Gitleaks with options to ensure all files are scanned
-gitleaks dir /app --report-format $FORMAT --report-path $REPORT_PATH \
-  --verbose --no-banner \
+gitleaks dir /app -v --report-format $FORMAT --report-path $REPORT_PATH \
+  --no-banner \
   --follow-symlinks \
   --max-decode-depth=10 \
-  --no-git \
   --max-target-megabytes=0
 
 # Store the exit code to handle it properly

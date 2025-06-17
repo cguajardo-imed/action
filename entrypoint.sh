@@ -1,14 +1,16 @@
 #!/bin/sh -l
 
-echo "Hola\n"
+echo "Listing files in the current directory:"
+ls -la
 
 REPORT_PATH="/app/gitleaks-report.$FORMAT"
 
+echo "Running Gitleaks"
 gitleaks $SCAN --report-format $FORMAT --report-path $REPORT_PATH \
   --redact 20 \
   --verbose $VERBOSE \
   --no-banner \
-  .
+  /app
 
 # read generated report and write the github output file
 if [ -f $REPORT_PATH ]; then

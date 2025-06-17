@@ -1,27 +1,48 @@
 #!/bin/sh -l
 
-echo "Listing files in the current directory:"
-ls -la
+# Print information about the scan directory
+echo "::group::Directory information"
+echo "Scanning all files (including hidden) in directory:"
+ls -la /app
+echo "::endgroup::"
 
 REPORT_PATH="/app/gitleaks-report.$FORMAT"
 
-echo "Running Gitleaks"
-gitleaks $SCAN --report-format $FORMAT --report-path $REPORT_PATH \
-  --redact 20 \
-  --verbose $VERBOSE \
-  --no-banner \
-  /app
+echo "::group::Running Gitleaks scan"
+# Run Gitleaks with options to ensure all files are scanned
+gitleaks dir /app --report-format $FORMAT --report-path $REPORT_PATH \
+  --verbose --no-banner \
+  --follow-symlinks \
+  --max-decode-depth=10 \
+  --no-git \
+  --max-target-megabytes=0
 
-# read generated report and write the github output file
+# Store the exit code to handle it properly
+GITLEAKS_EXIT_CODE=$?
+echo "::endgroup::"
+
 if [ -f $REPORT_PATH ]; then
-  echo "Gitleaks report generated at $REPORT_PATH"
-  echo "gitleaks_report<<EOF" >> $GITHUB_OUTPUT
-  cat $REPORT_PATH >> $GITHUB_OUTPUT
-  echo "EOF" >> $GITHUB_OUTPUT
+  {
+    echo "success=true"
+    echo "gitleaks_exit_code=$GITLEAKS_EXIT_CODE"
+    
+    # non-zero exit code means leaks found
+    if [ $GITLEAKS_EXIT_CODE -ne 0 ]; then
+      echo "leaks_found=true"
+    else
+      echo "leaks_found=false"
+    fi
+  } >> $GITHUB_OUTPUT
 else
-  echo "No gitleaks report generated."
-  exit 1
+  {
+    echo "success=false"
+    echo "gitleaks_exit_code=1"
+    echo "leaks_found=false"
+  } >> $GITHUB_OUTPUT
+
+  GITLEAKS_EXIT_CODE=1
 fi
 
-exit 0
+# Exit with the gitleaks exit code to properly indicate if leaks were found
+exit $GITLEAKS_EXIT_CODE
 

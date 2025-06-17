@@ -2,9 +2,7 @@ FROM zricethezav/gitleaks:v8.27.2
 
 # Receive env vars from the runner
 ARG FORMAT
-ARG SCAN
 ENV FORMAT=${FORMAT:-json}
-ENV SCAN=${SCAN:-dir}
 
 # Set the working directory
 WORKDIR /app

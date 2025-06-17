@@ -17,7 +17,8 @@ echo "::endgroup::"
 if [ -f $REPORT_PATH ]; then
   {
     echo "success=true"
-    echo "gitleaks_exit_code=$GITLEAKS_EXIT_CODE"
+    echo "report_content=$(cat $REPORT_PATH | sed 's/"/\\"/g')"  # Escape quotes for JSON compatibility
+    echo "report_path=$REPORT_PATH"
     
     # non-zero exit code means leaks found
     if [ $GITLEAKS_EXIT_CODE -ne 0 ]; then
@@ -30,7 +31,6 @@ if [ -f $REPORT_PATH ]; then
   # Print the report path
   echo "::group::Gitleaks report"
   echo "Gitleaks report generated at: $REPORT_PATH"
-  echo "Gitleaks exit code: $GITLEAKS_EXIT_CODE"
   echo "----"
   cat $REPORT_PATH
   echo "----"
@@ -38,7 +38,8 @@ if [ -f $REPORT_PATH ]; then
 else
   {
     echo "success=false"
-    echo "gitleaks_exit_code=1"
+    echo "report_content="
+    echo "report_path="
     echo "leaks_found=false"
   } >> $GITHUB_OUTPUT
 

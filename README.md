@@ -4,12 +4,6 @@
 ![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-blue)
 
 A GitHub Action that uses Gitleaks to scan repositories for secrets, keys, and other sensitive information.
-1. Uses the official Gitleaks Docker image (v8.27.2)
-2. Scans your entire repository directory for potential secrets
-3. Generates a report in the specified format (JSON by default)
-4. Stores the report in your repository workspace
-5. Provides outputs indicating scan success, Gitleaks exit code, and whether leaks were found
-6. Can optionally stop the workflow if leaks are found (via `stop_on_failure` input)
 
 ## Usage
 
@@ -33,7 +27,7 @@ jobs:
           fetch-depth: 0
       
       - name: Run Gitleaks
-        uses: cguajardo-imed/action@v0.0.8
+        uses: cguajardo-imed/action@v0.0.9
         id: gitleaks
         with:
           report_format: json
@@ -44,7 +38,8 @@ jobs:
         run: |
           echo "Scan successful: ${{ steps.gitleaks.outputs.success }}"
           echo "Leaks found: ${{ steps.gitleaks.outputs.leaks_found }}"
-          echo "Gitleaks exit code: ${{ steps.gitleaks.outputs.gitleaks_exit_code }}"
+          echo "Report path: ${{ steps.gitleaks.outputs.report_path }}"
+          echo "Report content: ${{ steps.gitleaks.outputs.report_content }}"
 ```
 
 ## Inputs
@@ -61,17 +56,20 @@ The action generates the following outputs:
 | Output           | Description                                |
 |------------------|--------------------------------------------|
 | `success`        | Whether the Gitleaks scan completed successfully (`true` or `false`) |
-| `gitleaks_exit_code` | The exit code returned by Gitleaks    |
-| `leaks_found`    | Whether any leaks were found (`true` or `false`) |
+| `report_path`   | Path to the generated report file          |
+| `report_content` | Content of the generated report file |
+| `leaks_found` | Whether any leaks were found (`true` or `false`) |
 
 ## How It Works
 
 This action:
 
-1. Uses the official Gitleaks Docker image
-2. Scans your repository for potential secrets
-3. Generates a report in the specified format
-4. Makes the report available as an action output
+1. Uses the official Gitleaks Docker image (v8.27.2)
+2. Scans your entire repository directory for potential secrets
+3. Generates a report in the specified format (JSON by default)
+4. Stores the report in your repository workspace
+5. Provides outputs indicating scan success, Gitleaks exit code, and whether leaks were found
+6. Can optionally stop the workflow if leaks are found (via `stop_on_failure` input)
 
 ## Security Notes
 

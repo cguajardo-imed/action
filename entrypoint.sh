@@ -1,17 +1,12 @@
 #!/bin/sh -l
 
-# Print information about the scan directory
-echo "::group::Directory information"
-echo "Scanning files in $REPO_PATH:"
-ls -la $REPO_PATH
-echo "::endgroup::"
-
 REPORT_PATH="$REPO_PATH/gitleaks-report.$FORMAT"
 
-echo "::group::Running Gitleaks scan"
+echo "::group::Running Gitleaks scan in $REPO_PATH"
 # Run Gitleaks with options to ensure all files are scanned
-gitleaks dir -v --report-format $FORMAT --report-path $REPORT_PATH \
-  --no-banner \
+gitleaks dir -v \
+  --report-format $FORMAT \
+  --report-path $REPORT_PATH \
   --follow-symlinks \
   $REPO_PATH
 
@@ -31,6 +26,15 @@ if [ -f $REPORT_PATH ]; then
       echo "leaks_found=false"
     fi
   } >> $GITHUB_OUTPUT
+
+  # Print the report path
+  echo "::group::Gitleaks report"
+  echo "Gitleaks report generated at: $REPORT_PATH"
+  echo "Gitleaks exit code: $GITLEAKS_EXIT_CODE"
+  echo "----"
+  cat $REPORT_PATH
+  echo "----"
+  echo "::endgroup::"
 else
   {
     echo "success=false"

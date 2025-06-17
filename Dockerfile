@@ -4,6 +4,9 @@ FROM zricethezav/gitleaks:v8.27.2
 ARG FORMAT
 ENV FORMAT=${FORMAT:-json}
 
+ARG STOP_ON_FAILURE
+ENV STOP_ON_FAILURE=${STOP_ON_FAILURE:-false}
+
 ENV REPO_PATH="/github/workspace"
 
 # Set the working directory

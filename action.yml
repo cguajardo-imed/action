@@ -9,6 +9,10 @@ inputs:
     description: 'Format of the report to generate'
     required: false
     default: 'json'
+  stop_on_failure:
+    description: 'Stop the workflow if Gitleaks finds any leaks'
+    required: false
+    default: 'false'
 
 outputs:
   report:
@@ -19,4 +23,5 @@ runs:
   image: Dockerfile
   env:
     FORMAT: ${{ inputs.report_format }}
+    STOP_ON_FAILURE: ${{ inputs.stop_on_failure }}
   

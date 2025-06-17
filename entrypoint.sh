@@ -45,6 +45,11 @@ else
   GITLEAKS_EXIT_CODE=1
 fi
 
-# Exit with the gitleaks exit code to properly indicate if leaks were found
-exit $GITLEAKS_EXIT_CODE
+# if STOP_ON_FAILURE is true, exit with the Gitleaks exit code, which could be 1, which means leaks found and should stop the workflow
+# if STOP_ON_FAILURE is false, exit with 0, which means the workflow should continue no matter what
+if [ $STOP_ON_FAILURE = true ]; then
+  exit $GITLEAKS_EXIT_CODE
+else 
+  exit 0
+fi
 

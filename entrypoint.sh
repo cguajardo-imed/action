@@ -2,20 +2,18 @@
 
 # Print information about the scan directory
 echo "::group::Directory information"
-echo "Scanning all files (including hidden) in directory /app:"
-ls -la /app
-echo "Scanning files in /github/workspace:"
-ls -la /github/workspace
+echo "Scanning files in $REPO_PATH:"
+ls -la $REPO_PATH
 echo "::endgroup::"
 
-REPORT_PATH="/app/gitleaks-report.$FORMAT"
+REPORT_PATH="$REPO_PATH/gitleaks-report.$FORMAT"
 
 echo "::group::Running Gitleaks scan"
 # Run Gitleaks with options to ensure all files are scanned
 gitleaks dir -v --report-format $FORMAT --report-path $REPORT_PATH \
   --no-banner \
   --follow-symlinks \
-  .
+  $REPO_PATH
 
 # Store the exit code to handle it properly
 GITLEAKS_EXIT_CODE=$?

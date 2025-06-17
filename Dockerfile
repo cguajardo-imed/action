@@ -4,8 +4,10 @@ FROM zricethezav/gitleaks:v8.27.2
 ARG FORMAT
 ENV FORMAT=${FORMAT:-json}
 
+ENV REPO_PATH="/github/workspace"
+
 # Set the working directory
-WORKDIR /app
+WORKDIR $REPO_PATH
 
 # Copy entrypoint script
 COPY entrypoint.sh /usr/bin/entrypoint.sh

@@ -9,10 +9,6 @@ inputs:
     description: 'Format of the report to generate'
     required: false
     default: 'json'
-  path:
-    description: 'Path to the repository to scan'
-    required: false
-    default: '.'
 
 outputs:
   report:
@@ -23,6 +19,4 @@ runs:
   image: Dockerfile
   env:
     FORMAT: ${{ inputs.report_format }}
-  args:
-    - "-v ${{ inputs.path }}:/app"
-
+  

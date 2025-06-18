@@ -5,6 +5,7 @@ REPORT_PATH="$REPO_PATH/gitleaks-report.$FORMAT"
 echo "::group::Running Gitleaks scan in $REPO_PATH"
 # Run Gitleaks with options to ensure all files are scanned
 gitleaks dir -v \
+  --no-banner \
   --report-format $FORMAT \
   --report-path $REPORT_PATH \
   --follow-symlinks \
@@ -17,7 +18,7 @@ echo "::endgroup::"
 if [ -f $REPORT_PATH ]; then
   {
     echo "success=true"
-    echo "report_content=\"$(cat $REPORT_PATH | base64)\""
+    echo "report_content=$(cat $REPORT_PATH | base64)\n"
     echo "report_path=$REPORT_PATH"
     
     # non-zero exit code means leaks found
@@ -32,7 +33,7 @@ if [ -f $REPORT_PATH ]; then
   echo "::group::Gitleaks report"
   echo "Gitleaks report generated at: $REPORT_PATH"
   echo "----"
-  cat $REPORT_PATH
+  $(cat $REPORT_PATH | base64)
   echo "----"
   echo "::endgroup::"
 else

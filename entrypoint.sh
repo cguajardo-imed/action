@@ -17,7 +17,7 @@ echo "::endgroup::"
 if [ -f $REPORT_PATH ]; then
   {
     echo "success=true"
-    echo "report_content=$(cat $REPORT_PATH | sed 's/"/\\"/g')"  # Escape quotes for JSON compatibility
+    echo "report_content=\"$(cat $REPORT_PATH | base64)\""
     echo "report_path=$REPORT_PATH"
     
     # non-zero exit code means leaks found
